@@ -30,13 +30,16 @@ review = st.text_area("Enter Review")
 
 if st.button("Predict"):
 
-    if drug.strip() == "" or review.strip() == "":
-        st.warning("Please enter both Drug Name and Review.")
+    if drug.strip() == "":
+        st.warning("Please enter the drug name.")
+
+    elif review.strip() == "":
+        st.warning("Please enter the review.")
 
     elif len(review.split()) < 3:
         st.warning("Review must contain at least 3 words.")
 
     else:
-        text = drug + " " + review
+        text = drug + " " + review + " " + review + " " + review
         prediction = model.predict([text])[0]
         st.success(f"Predicted Condition: {prediction}")
