@@ -1,0 +1,68 @@
+import streamlit as st
+import joblib
+import re
+import nltk
+from text_cleaner import TextCleaner   
+
+from nltk.corpus import stopwords
+from nltk.tokenize import word_tokenize
+from nltk.stem import WordNetLemmatizer
+from sklearn.base import BaseEstimator, TransformerMixin
+
+
+# download nltk data
+nltk.download('punkt')
+nltk.download('punkt_tab')
+nltk.download('stopwords')
+nltk.download('wordnet')
+
+
+# LOAD MODEL AFTER CLASS DEFINITION
+model = joblib.load("drug_condition_model(1).pkl")
+
+
+# Streamlit UI
+st.title("Drug Review Condition Predictor")
+
+drug = st.text_input("Drug Name")
+
+review = st.text_area("Enter Review")
+
+
+if st.button("Predict"):
+
+    if drug and review:
+
+        text = drug + " " + review
+
+        prediction = model.predict([text])[0]
+
+        st.success(f"Predicted Condition: {prediction}")
+
+    else:
+        st.warning("Please enter both drug name and review")import streamlit as st
+import joblib
+
+# Load model
+model = joblib.load("drug_condition_model.pkl")
+
+st.title("Drug Review Disease Predictor")
+
+st.write("Enter drug name and review to predict the condition.")
+
+drug = st.text_input("Drug Name")
+
+review = st.text_area("Enter Review")
+
+if st.button("Predict"):
+
+    if drug and review:
+
+        text = drug + " " + review
+
+        prediction = model.predict([text])[0]
+
+        st.success(f"Predicted Condition: {prediction}")
+
+    else:
+        st.warning("Please enter both drug name and review")
