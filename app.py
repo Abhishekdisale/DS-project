@@ -18,7 +18,7 @@ nltk.download('wordnet')
 
 
 # LOAD MODEL AFTER CLASS DEFINITION
-model = joblib.load("drug_condition_model(1).pkl")
+model = joblib.load("drug_condition_model (1).pkl")
 
 
 # Streamlit UI
