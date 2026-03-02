@@ -28,16 +28,11 @@ drug = st.text_input("Drug Name")
 
 review = st.text_area("Enter Review")
 
-
 if st.button("Predict"):
 
-    if drug and review:
-
-        text = drug + " " + review
-
-        prediction = model.predict([text])[0]
-
-        st.success(f"Predicted Condition: {prediction}")
-
+    if drug.strip() == "" or review.strip() == "":
+        st.warning("Please enter both Drug Name and Review.")
     else:
-        st.warning("Please enter both drug name and review")
+        text = drug + " " + review
+        prediction = model.predict([text])[0]
+        st.success(f"Predicted Condition: {prediction}")
