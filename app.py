@@ -34,7 +34,7 @@ if st.button("Predict"):
         st.warning("Please enter both Drug Name and Review.")
 
     elif len(review.split()) < 3:
-        st.warning("Review must contain at least 3 meaningful words.")
+        st.warning("Review must contain at least 3 words.")
 
     else:
         text = drug + " " + review
