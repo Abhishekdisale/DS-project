@@ -4,7 +4,6 @@ import nltk
 import difflib
 from text_cleaner import TextCleaner   
 
-# nltk resources
 from nltk.corpus import stopwords
 from nltk.tokenize import word_tokenize
 from nltk.stem import WordNetLemmatizer
@@ -18,33 +17,45 @@ nltk.download('stopwords')
 nltk.download('wordnet')
 
 
-# LOAD MODEL AND DRUG LIST
+# LOAD MODEL
 model = joblib.load("drug_condition_model (1).pkl")
 drug_list = joblib.load("drug_list.pkl")
 
 
-# Convert drug list to lowercase for easier comparison
+# Convert drug list to lowercase
 drug_list_lower = [d.lower() for d in drug_list]
 
 
-# STREAMLIT UI
+# Streamlit UI
 st.title("💊 Drug Review Condition Predictor")
 
-st.write("Enter a drug name and review to predict the medical condition.")
+st.write("Predict disease condition from drug name and review.")
 
 
-# Drug Input
-drug = st.text_input("Enter Drug Name")
+# ---------- Drug Input Mode ----------
+
+input_method = st.radio(
+    "Choose Drug Input Method",
+    ["Select from dataset", "Enter manually"]
+)
 
 
-# Review Input
+# Dropdown drug selection
+if input_method == "Select from dataset":
+    drug = st.selectbox("Select Drug Name", drug_list)
+
+# Custom drug input
+else:
+    drug = st.text_input("Enter Drug Name")
+
+
+# Review input
 review = st.text_area("Enter Review")
 
 
-# Prediction Button
-if st.button("Predict"):
+# ---------- Prediction ----------
 
-    # -------- Validation -------- #
+if st.button("Predict"):
 
     if drug.strip() == "":
         st.warning("Please enter the drug name.")
@@ -57,22 +68,21 @@ if st.button("Predict"):
 
     else:
 
-        # -------- Drug Validation -------- #
+        # If manual drug input, check similarity
+        if input_method == "Enter manually":
 
-        if drug.lower() not in drug_list_lower:
+            if drug.lower() not in drug_list_lower:
 
-            matches = difflib.get_close_matches(drug, drug_list, n=1, cutoff=0.6)
+                matches = difflib.get_close_matches(drug, drug_list, n=1, cutoff=0.6)
 
-            st.warning("Drug not found in dataset.")
+                st.warning("Drug not found in dataset.")
 
-            if matches:
-                st.info(f"Did you mean: **{matches[0]}** ?")
+                if matches:
+                    st.info(f"Did you mean: **{matches[0]}** ?")
 
-        else:
+        # Give higher priority to review
+        text = drug + " " + review + " " + review + " " + review
 
-            # Give more importance to review text
-            text = drug + " " + review + " " + review + " " + review
+        prediction = model.predict([text])[0]
 
-            prediction = model.predict([text])[0]
-
-            st.success(f"Predicted Condition: **{prediction}**")
+        st.success(f"Predicted Condition: **{prediction}**")
